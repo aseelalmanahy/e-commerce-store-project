@@ -1,106 +1,28 @@
-# Product Catalog Service
+# 🛒 Product Service
 
-## Overview
-The **Product Catalog Service** is a Spring Boot application designed to manage and provide product details, allowing users to filter and sort products based on various criteria. It serves as the foundation for building an e-commerce platform or integrating with other microservices such as Order or Inventory Management.
+Product Service is a Spring Boot microservice that manages product information in an e-commerce system. It exposes product data via REST APIs and serves as the source of truth for product details such as name, price, stock quantity, availability, brand, and category.
 
-### Key Features
-- Filter products by:
-    - Price range
-    - Brand
-    - Availability (in stock or out of stock)
-- Sort products by:
-    - Price (ascending or descending)
-    - Name (alphabetical order)
+In addition to serving product information, the service also acts as a Kafka consumer. It listens for order-related events published by the Order Service on the `order-topic`. Upon receiving these events, the Product Service can process or log them as needed, allowing it to eventually update stock, trigger alerts, or integrate with other services.
+
+This service is part of a microservices architecture and is designed to demonstrate inter-service communication via REST as well as event-driven messaging using Apache Kafka. It uses Spring Data JPA to persist product data in a MySQL database, and supports modern API documentation via Swagger UI.
+
+The key functionalities of this service include:
+- Providing product information through a REST API (`GET /products/{id}`)
+- Listening to Kafka events from the `order-topic`
+- Logging and reacting to incoming order events
+- Managing product availability and details in the database
+
+This service runs independently but expects Kafka and the Order Service to be available when processing events. It is designed to remain lightweight, focused, and responsive to upstream changes in a distributed system.
 
 ---
 
-## Technologies Used
+## ⚙️ Technologies Used
+
 - **Java 17**
-- **Spring Boot 3.3.4**
-- **Spring Data JPA**
-- **MySQL**
-- **Maven**
-
----
-
-## Setup Instructions
-### Prerequisites
-1. **Java 17** or higher installed.
-2. **Maven** installed.
-3. **MySQL** database setup.
-
-### Steps to Run the Project
-1. Clone the repository:
-   ```bash
-   git clone <repository_url>
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd product-catalog-service
-   ```
-3. Configure the database:
-    - Update the `application.properties` file with your MySQL credentials.
-   ```properties
-   spring.datasource.url=jdbc:mysql://localhost:3306/product_catalog
-   spring.datasource.username=<your_username>
-   spring.datasource.password=<your_password>
-   ```
-4. Build and run the application:
-   ```bash
-   mvn spring-boot:run
-   ```
-5. Access the application:
-    - Base URL: `http://localhost:8080`
-
----
-
-## API Endpoints
-
-### 1. Filter Products
-**Endpoint**: `GET /products/filter`
-
-#### Query Parameters:
-- `minPrice` (optional): Minimum price to filter by.
-- `maxPrice` (optional): Maximum price to filter by.
-- `brand` (optional): Filter by product brand.
-- `availability` (optional): Filter by stock status (`true` or `false`).
-- `sortBy` (optional): Field to sort by (`price` or `name`).
-- `order` (optional): Sorting order (`asc` or `desc`).
-
-#### Example Request:
-```
-GET /products/filter?minPrice=100&maxPrice=500&brand=Samsung&sortBy=price&order=asc
-```
-
-#### Example Response:
-```json
-[
-  {
-    "id": 1,
-    "name": "Smartphone",
-    "price": 400,
-    "brand": "Samsung",
-    "availability": true
-  },
-  {
-    "id": 2,
-    "name": "Tablet",
-    "price": 450,
-    "brand": "Samsung",
-    "availability": true
-  }
-]
-```
-
----
-
-## Future Enhancements
-- Add pagination to handle large datasets.
-- Integrate with an Order Service for end-to-end e-commerce functionality.
-- Implement caching to improve performance.
-
----
-
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
+- **Spring Boot 3.4.x**
+- **Spring Web** (for REST API)
+- **Spring Data JPA** (for database access)
+- **Apache Kafka** (consumer for event handling)
+- **MySQL** (as the relational database)
+- **Swagger/OpenAPI** (for interactive API documentation)
+- **Docker + Docker Compose** (for running Kafka and Zookeeper)
